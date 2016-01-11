@@ -1,0 +1,309 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = null;
+}
+
+<h2></h2>
+     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<script>
+
+    var itemTemplate = '<tr><td class="store"><strong>{{source}}</strong></td><td class="price">Rs. {{available_price}}</td><td class="uri"><a target="_blank" href="{{uri}}">Go to Store</a></td></tr>';
+    var collection = '';
+
+    var spinnerVisible = false;
+    function showProgress() {
+        if (!spinnerVisible) {
+            $("div#spinner").fadeIn("fast");
+            spinnerVisible = true;
+        }
+    };
+    function hideProgress() {
+        if (spinnerVisible) {
+            var spinner = $("div#spinner");
+            spinner.stop();
+            spinner.fadeOut("fast");
+            spinnerVisible = false;
+        }
+    };
+    $(document).ready(function () {
+
+     
+    });
+
+    $(document).on('click', '#btn_Submit', function (e) {
+        showProgress();
+        $("#tb_data").show();
+        Table_Append_Data();
+        
+      //  $('#price-list').empty();
+        var text_Serch = $("#txt_Serch").val();
+        $.ajax({
+            type: "GET",
+            url: "http://api.dataweave.in/v1/price_intelligence/findProduct/?api_key=b20a79e582ee4953ceccf41ac28aa08d&product='"+text_Serch+"'",
+
+            dataType: "json",
+            success: OnSuccess
+        });
+
+    });
+
+    function OnSuccess(data) {
+        // do something with the data
+     
+        //var data = jQuery.parseJSON(data2);
+       // var Resulit = jQuery.parseJSON(data);
+        console.log(data);
+        var element = '';
+        for (i = 0; i < data.count ; i++) {
+
+            //console.log(data.data[i].source);
+            try{
+                //element = itemTemplate.replace(/{{source}}/g, data.data[i].source);
+                //element = element.replace(/{{available_price}}/g, data.data[i].available_price);
+                //element = element.replace(/{{uri}}/g, data.data[i].url);
+                //collection += element;
+
+                if (data.data[i].source == 'Amazon' || data.data[i].source == 'Flipkart' || data.data[i].source == 'SnapDeal')
+                {
+                $("#tb_data").append("<tr class='info'><td >" + data.data[i].source + "</td> <td>" + data.data[i].available_price + "</td><td class='uri' ><a target='_blank' style=' COLOR: black;' href='" + data.data[i].url + "'>Go to Store</a></td></tr>");
+
+            }
+
+            }
+            catch(e){
+            }
+            
+
+        }
+        hideProgress();
+        //$.each(Resulit, function (key, value) {
+        //    element = itemTemplate.replace(/{{storename}}/g, value.source);
+        //    element = element.replace(/{{price}}/g, value.available_price);
+        //    element = element.replace(/{{uri}}/g, value.url);
+        //    collection += element;
+        //});
+       // $('#price-list').html(collection);
+
+    }
+  
+
+    function Table_Append_Data() {
+
+
+        $('#tb_data').empty();
+
+        $("#tb_data").append("<tr class='info'><td class='class='background-color: burlywood;'>Store Name</td> <td class='class='background-color: burlywood;'>Price</td> <td class='class='background-color: burlywood;'>URL</td></tr>");
+    }
+</script>
+
+@*<script src="http://img.pricetree.com/dev/pricetree-widget.1.0.js"></script>*@
+<!DOCTYPE html>
+<html>
+<head>
+<title>TestingData</title>
+</head>
+<body>
+<div class="form-wrapper cf">
+
+	<input  id="txt_Serch" type="text" placeholder="Search here..." required>
+	<button  id="btn_Submit"  type="submit">Search</button>
+  @*  Search: <input type="text" name="FirstName" >*@<br>
+
+
+</div>
+@*<div data-WRID="WRID-145249101039237781" data-widgetType="searchBar" 
+data-class="affiliateAdsByFlipkart" height="55" width="660" ></div>*@
+  <table id="tb_data" class="table_stylenew" style="display:none;">
+   
+      <tr>
+          <td colspan="3">
+
+          </td>
+      </tr>
+    <tbody id="price-list">
+        <!-- Data will be appended here -->
+    </tbody>
+</table>
+     <div id="spinner">
+       
+    </div>
+</body>
+</html>
+
+<style>
+
+            .table_stylenew
+{
+            width:100%;
+    border-style: solid;
+    border-width: 3px 3px 6px 3px;
+    border-color: #E4E4E4;
+    background-color: #FBFBFB;
+    -webkit-box-shadow: rgb(205, 205, 205) 0px 0px 4px;
+    box-shadow: rgb(205, 205, 205) 0px 0px 20px;
+    border-radius: 3px;
+     COLOR: black;
+
+}
+       table,th,td{
+        border:1px solid black;
+
+    }
+    .tr_Text_Style {
+       text-align:center;
+    }
+    .table thead tr.info > th {
+  background-color: #ddd;
+
+}
+
+     body {
+        background: #555 url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAB9JREFUeNpi/P//PwM6YGLAAuCCmpqacC2MRGsHCDAA+fIHfeQbO8kAAAAASUVORK5CYII=);
+        font: 13px 'Lucida sans', Arial, Helvetica;
+        color: #eee;
+        text-align: center;
+    }
+    
+    a {
+        color: #ccc;
+    }
+    
+    /*-------------------------------------*/
+    
+    .cf:before, .cf:after{
+      content:"";
+      display:table;
+    }
+    
+    .cf:after{
+      clear:both;
+    }
+
+    .cf{
+      zoom:1;
+    }
+
+    /*-------------------------------------*/	
+    
+    .form-wrapper {
+        width: 450px;
+        padding: 15px;
+        margin: 150px auto 50px auto;
+        background: #444;
+        background: rgba(0,0,0,.2);
+        -moz-border-radius: 10px;
+        -webkit-border-radius: 10px;
+        border-radius: 10px;
+        -moz-box-shadow: 0 1px 1px rgba(0,0,0,.4) inset, 0 1px 0 rgba(255,255,255,.2);
+        -webkit-box-shadow: 0 1px 1px rgba(0,0,0,.4) inset, 0 1px 0 rgba(255,255,255,.2);
+        box-shadow: 0 1px 1px rgba(0,0,0,.4) inset, 0 1px 0 rgba(255,255,255,.2);
+    }
+    
+    .form-wrapper input {
+        width: 330px;
+        height: 42px;
+        padding: 10px 5px;
+        float: left;    
+        font: bold 15px 'lucida sans', 'trebuchet MS', 'Tahoma';
+        border: 0;
+        background: #eee;
+        -moz-border-radius: 3px 0 0 3px;
+        -webkit-border-radius: 3px 0 0 3px;
+        border-radius: 3px 0 0 3px;      
+    }
+    
+    .form-wrapper input:focus {
+        outline: 0;
+        background: #fff;
+        -moz-box-shadow: 0 0 2px rgba(0,0,0,.8) inset;
+        -webkit-box-shadow: 0 0 2px rgba(0,0,0,.8) inset;
+        box-shadow: 0 0 2px rgba(0,0,0,.8) inset;
+    }
+    
+    .form-wrapper input::-webkit-input-placeholder {
+       color: #999;
+       font-weight: normal;
+       font-style: italic;
+    }
+    
+    .form-wrapper input:-moz-placeholder {
+        color: #999;
+        font-weight: normal;
+        font-style: italic;
+    }
+    
+    .form-wrapper input:-ms-input-placeholder {
+        color: #999;
+        font-weight: normal;
+        font-style: italic;
+    }    
+    
+    .form-wrapper button {
+		overflow: visible;
+        position: relative;
+        float: right;
+        border: 0;
+        padding: 0;
+        cursor: pointer;
+        height: 40px;
+        width: 110px;
+        font: bold 15px/40px 'lucida sans', 'trebuchet MS', 'Tahoma';
+        color: #fff;
+        text-transform: uppercase;
+        background: #d83c3c;
+        -moz-border-radius: 0 3px 3px 0;
+        -webkit-border-radius: 0 3px 3px 0;
+        border-radius: 0 3px 3px 0;      
+        text-shadow: 0 -1px 0 rgba(0, 0 ,0, .3);
+    }   
+      
+    .form-wrapper button:hover{		
+        background: #e54040;
+    }	
+      
+    .form-wrapper button:active,
+    .form-wrapper button:focus{   
+        background: #c42f2f;    
+    }
+    
+    .form-wrapper button:before {
+        content: '';
+        position: absolute;
+        border-width: 8px 8px 8px 0;
+        border-style: solid solid solid none;
+        border-color: transparent #d83c3c transparent;
+        top: 12px;
+        left: -6px;
+    }
+    
+    .form-wrapper button:hover:before{
+        border-right-color: #e54040;
+    }
+    
+    .form-wrapper button:focus:before{
+        border-right-color: #c42f2f;
+    }    
+    
+    .form-wrapper button::-moz-focus-inner {
+        border: 0;
+        padding: 0;
+    }
+        div#spinner
+{
+    display: none;
+    width:100px;
+    height: 100px;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    background:url('../Images/progress.gif') no-repeat center #fff;
+    text-align:center;
+    padding:10px;
+    font:normal 16px Tahoma, Geneva, sans-serif;
+    border:1px solid #666;
+    margin-left: -50px;
+    margin-top: -50px;
+    z-index:2;
+    overflow: auto;
+}
+</style>
